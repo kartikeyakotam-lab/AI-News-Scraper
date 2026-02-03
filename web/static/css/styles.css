@@ -54,14 +54,59 @@
 }
 
 .source-badge.openai { background: #e0f2fe; color: #0369a1; }
-.source-badge.anthropic { background: #fef3c7; color: #b45309; }
+.source-badge.anthropic_news, .source-badge.anthropic_research { background: #fef3c7; color: #b45309; }
 .source-badge.deepmind { background: #dcfce7; color: #15803d; }
+.source-badge.google_ai { background: #fef9c3; color: #a16207; }
 .source-badge.meta_ai { background: #dbeafe; color: #1d4ed8; }
 .source-badge.mistral { background: #f3e8ff; color: #7c3aed; }
 .source-badge.cohere { background: #ffe4e6; color: #be123c; }
+.source-badge.xai { background: #f5f5f5; color: #171717; }
+.source-badge.ai21 { background: #e0e7ff; color: #4338ca; }
+.source-badge.stability { background: #fce7f3; color: #9d174d; }
+.source-badge.inflection { background: #ccfbf1; color: #0f766e; }
+.source-badge.huggingface { background: #fef3c7; color: #d97706; }
+.source-badge.databricks { background: #fee2e2; color: #b91c1c; }
+.source-badge.scale_ai { background: #f3e8ff; color: #7c3aed; }
+.source-badge.writer { background: #d1fae5; color: #059669; }
+.source-badge.jasper { background: #fef3c7; color: #b45309; }
+.source-badge.runway { background: #e0e7ff; color: #4f46e5; }
+.source-badge.elevenlabs { background: #f5f5f5; color: #171717; }
+.source-badge.perplexity { background: #dbeafe; color: #1d4ed8; }
+.source-badge.glean { background: #dcfce7; color: #15803d; }
+.source-badge.cursor { background: #f5f5f5; color: #171717; }
+.source-badge.together_ai { background: #e0f2fe; color: #0369a1; }
+.source-badge.replicate { background: #fae8ff; color: #a21caf; }
+.source-badge.pinecone { background: #d1fae5; color: #047857; }
+.source-badge.wandb { background: #fef3c7; color: #d97706; }
+.source-badge.harvey_ai { background: #dbeafe; color: #1d4ed8; }
+.source-badge.adept { background: #f3e8ff; color: #7c3aed; }
+.source-badge.langchain { background: #dcfce7; color: #15803d; }
+.source-badge.llamaindex { background: #e0e7ff; color: #4338ca; }
 .source-badge.verge_ai { background: #fce7f3; color: #be185d; }
 .source-badge.techcrunch_ai { background: #d1fae5; color: #047857; }
 .source-badge.venturebeat_ai { background: #e0e7ff; color: #4338ca; }
+.source-badge.mit_tech_ai { background: #fee2e2; color: #b91c1c; }
+.source-badge.wired_ai { background: #f5f5f5; color: #171717; }
+.source-badge.ars_ai { background: #ffedd5; color: #c2410c; }
+
+/* Stock badge styles */
+.stock-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.stock-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
 
 /* Source filter button styles */
 .source-filter {

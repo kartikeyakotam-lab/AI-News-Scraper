@@ -123,7 +123,22 @@ function createArticleCard(article) {
     card.className = 'article-card';
 
     const date = article.published_date ? formatDate(article.published_date) : 'Date unknown';
-    const summary = article.summary || 'No summary available.';
+    const summary = article.tldr || article.summary || 'No summary available.';
+    const impactedStocks = article.impacted_stocks || [];
+
+    // Build stocks HTML
+    let stocksHtml = '';
+    if (impactedStocks.length > 0) {
+        const stockBadges = impactedStocks.map(s =>
+            `<span class="stock-badge" title="${escapeHtml(s.reason || '')}">${s.ticker}</span>`
+        ).join('');
+        stocksHtml = `
+            <div class="mt-3 flex flex-wrap items-center gap-1">
+                <span class="text-xs text-gray-500 mr-1">📊</span>
+                ${stockBadges}
+            </div>
+        `;
+    }
 
     card.innerHTML = `
         <div class="flex items-center justify-between mb-3">
@@ -136,6 +151,7 @@ function createArticleCard(article) {
             </a>
         </h3>
         <p class="article-summary">${escapeHtml(summary)}</p>
+        ${stocksHtml}
         <div class="mt-4 flex items-center justify-between">
             <a href="${article.url}" target="_blank" rel="noopener noreferrer"
                class="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 transition-colors">
@@ -236,15 +252,45 @@ async function handleScrape() {
 // Utility functions
 function formatSourceName(source) {
     const names = {
+        // Foundational Model Labs
         'openai': 'OpenAI',
-        'anthropic': 'Anthropic',
+        'anthropic_news': 'Anthropic',
+        'anthropic_research': 'Anthropic Research',
         'deepmind': 'DeepMind',
+        'google_ai': 'Google AI',
         'meta_ai': 'Meta AI',
         'mistral': 'Mistral',
         'cohere': 'Cohere',
+        'xai': 'xAI',
+        'ai21': 'AI21 Labs',
+        'stability': 'Stability AI',
+        'inflection': 'Inflection AI',
+        // Forbes AI 50 B2B SaaS
+        'huggingface': 'Hugging Face',
+        'databricks': 'Databricks',
+        'scale_ai': 'Scale AI',
+        'writer': 'Writer',
+        'jasper': 'Jasper',
+        'runway': 'Runway',
+        'elevenlabs': 'ElevenLabs',
+        'perplexity': 'Perplexity',
+        'glean': 'Glean',
+        'cursor': 'Cursor',
+        'together_ai': 'Together AI',
+        'replicate': 'Replicate',
+        'pinecone': 'Pinecone',
+        'wandb': 'Weights & Biases',
+        'harvey_ai': 'Harvey AI',
+        'adept': 'Adept',
+        'langchain': 'LangChain',
+        'llamaindex': 'LlamaIndex',
+        // News
         'verge_ai': 'The Verge',
         'techcrunch_ai': 'TechCrunch',
         'venturebeat_ai': 'VentureBeat',
+        'mit_tech_ai': 'MIT Tech Review',
+        'wired_ai': 'Wired',
+        'ars_ai': 'Ars Technica',
     };
     return names[source] || source;
 }

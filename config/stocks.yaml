@@ -1,0 +1,188 @@
+# Raimo Lenschow's Barclays Software Coverage List
+# These stocks will be tagged when AI news impacts them
+
+stocks:
+  - ticker: APPN
+    name: Appian
+    sector: Low-Code/Automation
+    keywords: [low-code, automation, workflow, business process, enterprise apps]
+
+  - ticker: PEGA
+    name: Pegasystems
+    sector: CRM/Automation
+    keywords: [crm, customer engagement, automation, decisioning, low-code]
+
+  - ticker: PATH
+    name: UiPath
+    sector: RPA/Automation
+    keywords: [rpa, robotic process automation, automation, bots, workflow]
+
+  - ticker: INTU
+    name: Intuit
+    sector: Financial Software
+    keywords: [quickbooks, turbotax, accounting, small business, fintech, tax]
+
+  - ticker: SPT
+    name: Sprout Social
+    sector: Social Media Software
+    keywords: [social media, marketing, social analytics, engagement]
+
+  - ticker: CXM
+    name: Sprinklr
+    sector: Customer Experience
+    keywords: [customer experience, social media, marketing, cx platform]
+
+  - ticker: OTEX
+    name: OpenText
+    sector: Enterprise Information
+    keywords: [content management, enterprise software, information management]
+
+  - ticker: LSPD
+    name: Lightspeed Commerce
+    sector: Commerce/POS
+    keywords: [pos, point of sale, commerce, retail, payments, ecommerce]
+
+  - ticker: DV
+    name: DoubleVerify
+    sector: Ad Tech
+    keywords: [advertising, ad verification, brand safety, digital ads]
+
+  - ticker: CMRC
+    name: Commercetools
+    sector: Commerce
+    keywords: [commerce, ecommerce, headless commerce, retail]
+
+  - ticker: NOW
+    name: ServiceNow
+    sector: IT Service Management
+    keywords: [itsm, it service, workflow, enterprise, digital transformation, service management]
+
+  - ticker: MSFT
+    name: Microsoft
+    sector: Enterprise Software
+    keywords: [azure, office, windows, copilot, github, linkedin, dynamics, teams, cloud]
+
+  - ticker: MDB
+    name: MongoDB
+    sector: Database
+    keywords: [database, nosql, document database, atlas, data platform]
+
+  - ticker: ORCL
+    name: Oracle
+    sector: Database/Cloud
+    keywords: [database, cloud, erp, enterprise, java, oci]
+
+  - ticker: CRM
+    name: Salesforce
+    sector: CRM
+    keywords: [crm, sales, marketing cloud, customer, einstein, slack, tableau]
+
+  - ticker: KVYO
+    name: Klaviyo
+    sector: Marketing Automation
+    keywords: [email marketing, sms marketing, ecommerce marketing, automation]
+
+  - ticker: BRZE
+    name: Braze
+    sector: Customer Engagement
+    keywords: [customer engagement, marketing, push notifications, messaging]
+
+  - ticker: TEAM
+    name: Atlassian
+    sector: Collaboration/DevOps
+    keywords: [jira, confluence, trello, devops, collaboration, agile]
+
+  - ticker: MNDY
+    name: Monday.com
+    sector: Work Management
+    keywords: [work management, project management, collaboration, productivity]
+
+  - ticker: WDAY
+    name: Workday
+    sector: HCM/Finance
+    keywords: [hr, human capital, hcm, finance, payroll, workforce]
+
+  - ticker: PCTY
+    name: Paylocity
+    sector: HCM/Payroll
+    keywords: [payroll, hr, hcm, workforce management, human capital]
+
+  - ticker: PAYC
+    name: Paycom
+    sector: HCM/Payroll
+    keywords: [payroll, hr, hcm, workforce, human capital, benefits]
+
+  - ticker: CRWV
+    name: CoreWeave
+    sector: Cloud/GPU
+    keywords: [gpu, cloud computing, ai infrastructure, compute, nvidia]
+
+  - ticker: TDC
+    name: Teradata
+    sector: Data Analytics
+    keywords: [data warehouse, analytics, big data, enterprise analytics]
+
+  - ticker: DSGX
+    name: Descartes Systems
+    sector: Logistics Software
+    keywords: [logistics, supply chain, shipping, transportation, customs]
+
+  - ticker: SNOW
+    name: Snowflake
+    sector: Data Cloud
+    keywords: [data warehouse, data cloud, analytics, data sharing, data lake]
+
+  - ticker: FROG
+    name: JFrog
+    sector: DevOps
+    keywords: [devops, artifact management, ci/cd, software supply chain, binaries]
+
+  - ticker: FIVN
+    name: Five9
+    sector: Contact Center
+    keywords: [contact center, call center, ccaas, customer service, voice]
+
+  - ticker: GTLB
+    name: GitLab
+    sector: DevOps
+    keywords: [devops, git, ci/cd, source control, devsecops, code]
+
+  - ticker: DDOG
+    name: Datadog
+    sector: Observability
+    keywords: [monitoring, observability, apm, logs, infrastructure, cloud monitoring]
+
+  - ticker: ESTC
+    name: Elastic
+    sector: Search/Observability
+    keywords: [search, elasticsearch, observability, logging, siem, security]
+
+  - ticker: DT
+    name: Dynatrace
+    sector: Observability
+    keywords: [observability, apm, monitoring, aiops, software intelligence]
+
+  - ticker: SMWB
+    name: Similarweb
+    sector: Digital Intelligence
+    keywords: [web analytics, digital intelligence, market research, traffic]
+
+  - ticker: HUBS
+    name: HubSpot
+    sector: CRM/Marketing
+    keywords: [crm, marketing, inbound marketing, sales, customer platform]
+
+  - ticker: GTM
+    name: ZoomInfo
+    sector: Sales Intelligence
+    keywords: [sales intelligence, b2b data, go-to-market, lead generation]
+
+  - ticker: DOCN
+    name: DigitalOcean
+    sector: Cloud Infrastructure
+    keywords: [cloud, hosting, infrastructure, developers, vps, kubernetes]
+
+  - ticker: SAP
+    name: SAP
+    sector: Enterprise Software
+    keywords: [erp, enterprise, s4hana, business software, supply chain]

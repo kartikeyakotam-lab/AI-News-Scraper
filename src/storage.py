@@ -112,9 +112,9 @@ class Storage:
             except (json.JSONDecodeError, IOError) as e:
                 logger.error(f"Error reading {file_path}: {e}")
 
-        # Sort by scraped_at date (newest first)
+        # Sort by published_date (newest first), fallback to scraped_at
         all_articles.sort(
-            key=lambda x: x.get('scraped_at', ''),
+            key=lambda x: x.get('published_date') or x.get('scraped_at', ''),
             reverse=True
         )
 
