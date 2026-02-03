@@ -1,0 +1,393 @@
+# AI News Sources Configuration
+# Each source defines how to scrape articles from that site
+
+sources:
+  # ===================
+  # Foundational Model Labs
+  # ===================
+
+  - name: openai
+    display_name: "OpenAI Blog"
+    url: "https://openai.com/news/rss.xml"
+    type: rss
+    rate_limit_seconds: 2
+
+  - name: anthropic_news
+    display_name: "Anthropic News"
+    url: "https://www.anthropic.com/news"
+    type: html
+    selectors:
+      article_list: "a[href*='/news/']"
+      title: "h3, h2, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: anthropic_research
+    display_name: "Anthropic Research"
+    url: "https://www.anthropic.com/research"
+    type: html
+    selectors:
+      article_list: "a[href*='/research/']"
+      title: "h3, h2, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: deepmind
+    display_name: "Google DeepMind Blog"
+    url: "https://deepmind.google/discover/blog/"
+    type: html
+    selectors:
+      article_list: "article, [class*='card'], [class*='post']"
+      title: "h1, h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description'], [class*='summary']"
+    rate_limit_seconds: 2
+
+  - name: google_ai
+    display_name: "Google AI Blog"
+    url: "https://blog.google/technology/ai/rss/"
+    type: rss
+    rate_limit_seconds: 2
+
+  - name: meta_ai
+    display_name: "Meta AI Blog"
+    url: "https://ai.meta.com/blog/"
+    type: html
+    selectors:
+      article_list: "[class*='blog'], [class*='card'], article"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, span[class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: mistral
+    display_name: "Mistral AI News"
+    url: "https://mistral.ai/news/"
+    type: html
+    selectors:
+      article_list: "[class*='news'], [class*='post'], article, a[href*='/news/']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: cohere
+    display_name: "Cohere Blog"
+    url: "https://cohere.com/blog"
+    type: html
+    selectors:
+      article_list: "[class*='blog'], [class*='post'], article, a[href*='/blog/']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: xai
+    display_name: "xAI"
+    url: "https://x.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p"
+    rate_limit_seconds: 2
+
+  - name: ai21
+    display_name: "AI21 Labs Blog"
+    url: "https://www.ai21.com/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: stability
+    display_name: "Stability AI"
+    url: "https://stability.ai/news"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='news']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: inflection
+    display_name: "Inflection AI"
+    url: "https://inflection.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p"
+    rate_limit_seconds: 2
+
+  # ===================
+  # Forbes AI 50 - B2B SaaS Companies
+  # ===================
+
+  - name: huggingface
+    display_name: "Hugging Face Blog"
+    url: "https://huggingface.co/blog/feed.xml"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: databricks
+    display_name: "Databricks Blog"
+    url: "https://www.databricks.com/feed"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: scale_ai
+    display_name: "Scale AI Blog"
+    url: "https://scale.com/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog'], a[href*='/blog/']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: writer
+    display_name: "Writer Blog"
+    url: "https://writer.com/blog/"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: jasper
+    display_name: "Jasper AI Blog"
+    url: "https://www.jasper.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: runway
+    display_name: "Runway ML Blog"
+    url: "https://runwayml.com/blog/"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: elevenlabs
+    display_name: "ElevenLabs Blog"
+    url: "https://elevenlabs.io/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: perplexity
+    display_name: "Perplexity AI Blog"
+    url: "https://www.perplexity.ai/hub"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog'], a[href*='/hub/']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: glean
+    display_name: "Glean Blog"
+    url: "https://www.glean.com/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: cursor
+    display_name: "Cursor Blog"
+    url: "https://cursor.com/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: together_ai
+    display_name: "Together AI Blog"
+    url: "https://www.together.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: replicate
+    display_name: "Replicate Blog"
+    url: "https://replicate.com/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: pinecone
+    display_name: "Pinecone Blog"
+    url: "https://www.pinecone.io/blog/"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: wandb
+    display_name: "Weights & Biases Blog"
+    url: "https://wandb.ai/fully-connected"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: harvey_ai
+    display_name: "Harvey AI Blog"
+    url: "https://www.harvey.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: adept
+    display_name: "Adept AI Blog"
+    url: "https://www.adept.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: langchain
+    display_name: "LangChain Blog"
+    url: "https://blog.langchain.dev/"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  - name: llamaindex
+    display_name: "LlamaIndex Blog"
+    url: "https://www.llamaindex.ai/blog"
+    type: html
+    selectors:
+      article_list: "article, [class*='post'], [class*='blog']"
+      title: "h2, h3, [class*='title']"
+      link: "a"
+      date: "time, [class*='date']"
+      summary: "p, [class*='description']"
+    rate_limit_seconds: 2
+
+  # ===================
+  # AI/SaaS News (RSS Feeds)
+  # ===================
+
+  - name: verge_ai
+    display_name: "The Verge AI"
+    url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: techcrunch_ai
+    display_name: "TechCrunch AI"
+    url: "https://techcrunch.com/category/artificial-intelligence/feed/"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: venturebeat_ai
+    display_name: "VentureBeat AI"
+    url: "https://venturebeat.com/category/ai/feed/"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: mit_tech_ai
+    display_name: "MIT Tech Review AI"
+    url: "https://www.technologyreview.com/feed/"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: wired_ai
+    display_name: "Wired AI"
+    url: "https://www.wired.com/feed/tag/ai/latest/rss"
+    type: rss
+    rate_limit_seconds: 1
+
+  - name: ars_ai
+    display_name: "Ars Technica AI"
+    url: "https://feeds.arstechnica.com/arstechnica/technology-lab"
+    type: rss
+    rate_limit_seconds: 1
+
+# Default settings
+defaults:
+  request_timeout: 30
+  max_articles_per_source: 50
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"

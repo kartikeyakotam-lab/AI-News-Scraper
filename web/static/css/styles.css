@@ -1,0 +1,240 @@
+/* Custom styles for AI News Scraper */
+
+/* Smooth page transitions */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Article card styles */
+.article-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid #ede9fe;
+    box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.05), 0 2px 4px -1px rgba(139, 92, 246, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
+    border-color: #c4b5fd;
+}
+
+/* Stagger animation for cards */
+.article-card:nth-child(1) { animation-delay: 0.05s; }
+.article-card:nth-child(2) { animation-delay: 0.1s; }
+.article-card:nth-child(3) { animation-delay: 0.15s; }
+.article-card:nth-child(4) { animation-delay: 0.2s; }
+.article-card:nth-child(5) { animation-delay: 0.25s; }
+.article-card:nth-child(6) { animation-delay: 0.3s; }
+.article-card:nth-child(7) { animation-delay: 0.35s; }
+.article-card:nth-child(8) { animation-delay: 0.4s; }
+.article-card:nth-child(9) { animation-delay: 0.45s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Source badge styles */
+.source-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.source-badge.openai { background: #e0f2fe; color: #0369a1; }
+.source-badge.anthropic { background: #fef3c7; color: #b45309; }
+.source-badge.deepmind { background: #dcfce7; color: #15803d; }
+.source-badge.meta_ai { background: #dbeafe; color: #1d4ed8; }
+.source-badge.mistral { background: #f3e8ff; color: #7c3aed; }
+.source-badge.cohere { background: #ffe4e6; color: #be123c; }
+.source-badge.verge_ai { background: #fce7f3; color: #be185d; }
+.source-badge.techcrunch_ai { background: #d1fae5; color: #047857; }
+.source-badge.venturebeat_ai { background: #e0e7ff; color: #4338ca; }
+
+/* Source filter button styles */
+.source-filter {
+    background: white;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+}
+
+.source-filter:hover {
+    border-color: #c4b5fd;
+    color: #7c3aed;
+}
+
+.source-filter.active {
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.3);
+}
+
+/* Toast notifications */
+.toast {
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Typing animation for AI response */
+.typing-dots {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.typing-dots span {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #8b5cf6;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #c4b5fd, #a5f3fc);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #a78bfa, #67e8f9);
+}
+
+/* Focus styles */
+input:focus, button:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #8b5cf6;
+}
+
+/* Article title link */
+.article-title {
+    color: #1f2937;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.article-title:hover {
+    color: #7c3aed;
+}
+
+/* Date formatting */
+.article-date {
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+/* Summary text */
+.article-summary {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Button pulse animation for refresh */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
