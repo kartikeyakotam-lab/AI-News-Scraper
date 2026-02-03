@@ -173,6 +173,69 @@ def cmd_stats(args):
         print(f"  {source}: {count}")
 
 
+def cmd_test_email(args):
+    """Send a test email to verify SendGrid configuration."""
+    from src.newsletter import Newsletter
+
+    newsletter = Newsletter()
+
+    if not newsletter.is_available():
+        print("Error: Newsletter not available.")
+        print("Check SENDGRID_API_KEY in your .env file.")
+        return
+
+    print("Sending test email...")
+    result = newsletter.send_test_email()
+
+    if result['success']:
+        print(f"Success! Test email sent to {newsletter.to_email}")
+    else:
+        print(f"Failed: {result['message']}")
+
+
+def cmd_retag(args):
+    """Re-tag all existing articles with stock impacts."""
+    from src.storage import Storage
+    from src.stock_tagger import StockTagger
+    import json
+
+    storage = Storage()
+    tagger = StockTagger()
+
+    if not tagger.is_available():
+        print("Error: Stock tagger not available. Check ANTHROPIC_API_KEY.")
+        return
+
+    limit = args.limit or 50
+    articles = storage.get_recent_articles(limit=limit)
+
+    print(f"Re-tagging {len(articles)} articles with stock impacts...")
+
+    tagged_count = 0
+    for i, article in enumerate(articles, 1):
+        if article.get('impacted_stocks'):
+            print(f"  {i}. Already tagged: {article['title'][:40]}...")
+            continue
+
+        print(f"  {i}. Tagging: {article['title'][:40]}...")
+        result = tagger.tag_article(article)
+
+        article['tldr'] = result['tldr']
+        article['impacted_stocks'] = result['impacted_stocks']
+        tagged_count += 1
+
+        if result['impacted_stocks']:
+            stocks = [s['ticker'] for s in result['impacted_stocks']]
+            print(f"      -> Stocks: {', '.join(stocks)}")
+
+    # Save updated articles back to combined file
+    combined_file = storage._get_combined_file()
+    with open(combined_file, 'w', encoding='utf-8') as f:
+        json.dump(articles, f, indent=2, ensure_ascii=False)
+
+    print(f"\nDone! Tagged {tagged_count} articles.")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='AI News Scraper - Collect and search AI news with Claude',
@@ -206,6 +269,13 @@ def main():
     # Stats command
     stats_parser = subparsers.add_parser('stats', help='Show statistics')
 
+    # Test email command
+    test_email_parser = subparsers.add_parser('test-email', help='Send test email')
+
+    # Retag command
+    retag_parser = subparsers.add_parser('retag', help='Re-tag articles with stock impacts')
+    retag_parser.add_argument('--limit', type=int, default=50, help='Number of articles to tag')
+
     args = parser.parse_args()
 
     if args.command == 'run':
@@ -220,6 +290,10 @@ def main():
         cmd_search(args)
     elif args.command == 'stats':
         cmd_stats(args)
+    elif args.command == 'test-email':
+        cmd_test_email(args)
+    elif args.command == 'retag':
+        cmd_retag(args)
     else:
         parser.print_help()
 
