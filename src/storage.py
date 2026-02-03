@@ -147,6 +147,56 @@ class Storage:
         articles = self.load_all_articles()
         return articles[:limit]
 
+    def cleanup_old_articles(self, days: int = 14) -> int:
+        """
+        Remove articles older than specified days.
+
+        Args:
+            days: Number of days to keep articles (default 14)
+
+        Returns:
+            Number of articles removed
+        """
+        from datetime import datetime, timedelta
+
+        cutoff_date = (datetime.utcnow() - timedelta(days=days)).isoformat() + "Z"
+        total_removed = 0
+
+        for file_path in self.data_dir.glob("*.json"):
+            if file_path.name == "all_articles.json":
+                continue
+
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    articles = json.load(f)
+
+                original_count = len(articles)
+
+                # Filter to keep only recent articles
+                articles = [
+                    a for a in articles
+                    if (a.get('published_date') or a.get('scraped_at', '')) > cutoff_date
+                ]
+
+                removed = original_count - len(articles)
+                total_removed += removed
+
+                if removed > 0:
+                    # Save filtered articles
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        json.dump(articles, f, indent=2, ensure_ascii=False)
+                    logger.info(f"Removed {removed} old articles from {file_path.stem}")
+
+            except (json.JSONDecodeError, IOError) as e:
+                logger.error(f"Error cleaning {file_path}: {e}")
+
+        # Update combined file after cleanup
+        if total_removed > 0:
+            self.update_combined_file()
+
+        logger.info(f"Cleanup complete. Removed {total_removed} articles older than {days} days.")
+        return total_removed
+
     def get_stats(self) -> dict:
         """Get storage statistics."""
         stats = {

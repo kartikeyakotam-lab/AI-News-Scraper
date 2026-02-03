@@ -58,10 +58,13 @@ def run_scrape_job(send_newsletter: bool = True):
                 if new_count > 0:
                     logger.info(f"Added {new_count} new articles from {source_name}")
 
+        # Clean up articles older than 14 days
+        removed = storage.cleanup_old_articles(days=14)
+
         # Update combined file
         total = storage.update_combined_file()
 
-        logger.info(f"Scrape complete. {len(all_new_articles)} new articles total.")
+        logger.info(f"Scrape complete. {len(all_new_articles)} new articles, {removed} old articles removed.")
 
         # Send newsletter if there are new articles
         if send_newsletter and all_new_articles and newsletter.is_available():

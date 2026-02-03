@@ -1,0 +1,16 @@
+[Unit]
+Description=AI News Scraper - Hourly Scheduler
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/ai-news-scraper
+Environment=PATH=/opt/ai-news-scraper/venv/bin:/usr/bin
+EnvironmentFile=/opt/ai-news-scraper/.env
+ExecStart=/opt/ai-news-scraper/venv/bin/python main.py schedule
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
