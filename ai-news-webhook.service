@@ -1,0 +1,16 @@
+[Unit]
+Description=GitHub Webhook for AI News Scraper
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/ai-news-scraper
+Environment=PATH=/opt/ai-news-scraper/venv/bin:/usr/bin
+Environment=GITHUB_WEBHOOK_SECRET=kartik-news-webhook-2024
+ExecStart=/opt/ai-news-scraper/venv/bin/python webhook_server.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
