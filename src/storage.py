@@ -113,8 +113,9 @@ class Storage:
                 logger.error(f"Error reading {file_path}: {e}")
 
         # Sort by published_date (newest first), fallback to scraped_at
+        # Articles without dates go to the end
         all_articles.sort(
-            key=lambda x: x.get('published_date') or x.get('scraped_at', ''),
+            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
             reverse=True
         )
 
@@ -137,14 +138,38 @@ class Storage:
                 return article
         return None
 
+    def _has_valid_date(self, article: dict) -> bool:
+        """Check if article has a valid date."""
+        date = article.get('published_date') or article.get('scraped_at')
+        if not date:
+            return False
+        # Check it's not a placeholder or invalid
+        if date == '1970-01-01' or date.startswith('1970'):
+            return False
+        return True
+
     def get_articles_by_source(self, source_name: str, limit: int = 50) -> list[dict]:
-        """Get articles from a specific source."""
+        """Get articles from a specific source, sorted by date (newest first). Only includes articles with dates."""
         articles = self.load_articles(source_name)
+        # Filter out articles without valid dates
+        articles = [a for a in articles if self._has_valid_date(a)]
+        # Sort by date (newest first)
+        articles.sort(
+            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
+            reverse=True
+        )
         return articles[:limit]
 
     def get_recent_articles(self, limit: int = 50) -> list[dict]:
-        """Get most recent articles across all sources."""
+        """Get most recent articles across all sources, sorted by date (newest first). Only includes articles with dates."""
         articles = self.load_all_articles()
+        # Filter out articles without valid dates
+        articles = [a for a in articles if self._has_valid_date(a)]
+        # Sort by date (newest first)
+        articles.sort(
+            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
+            reverse=True
+        )
         return articles[:limit]
 
     def cleanup_old_articles(self, days: int = 14) -> int:

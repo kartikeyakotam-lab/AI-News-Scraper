@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSources();
     loadArticles();
     setupEventListeners();
+
+    // Add click handler to "All Sources" button
+    const allSourcesBtn = document.querySelector('[data-source="all"]');
+    if (allSourcesBtn) {
+        allSourcesBtn.addEventListener('click', () => filterBySource('all'));
+    }
 });
 
 // Event Listeners

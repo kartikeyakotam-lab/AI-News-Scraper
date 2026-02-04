@@ -132,23 +132,91 @@ class BlogParser(BaseParser):
 
     def _extract_date(self, element) -> Optional[str]:
         """Extract publication date from article element."""
+        import re
+        from datetime import datetime
+
         selector = self.selectors.get('date', 'time, [class*="date"], [datetime]')
 
         # Try time element with datetime attribute
         time_el = element.find('time')
         if time_el and time_el.get('datetime'):
-            return time_el.get('datetime')
+            return self._normalize_date(time_el.get('datetime'))
 
         # Try configured selector
         date_el = element.select_one(selector)
         if date_el:
             # Check for datetime attribute
             if date_el.get('datetime'):
-                return date_el.get('datetime')
+                return self._normalize_date(date_el.get('datetime'))
             # Get text content
             date_text = self.clean_text(date_el.get_text())
             if date_text:
-                return date_text
+                normalized = self._normalize_date(date_text)
+                if normalized:
+                    return normalized
+
+        # Try finding any element with date-like attributes
+        for attr in ['datetime', 'data-date', 'data-published', 'data-time']:
+            el = element.find(attrs={attr: True})
+            if el:
+                return self._normalize_date(el.get(attr))
+
+        # Look for date patterns in any text
+        date_patterns = [
+            r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4}\b',
+            r'\b\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\b',
+            r'\b\d{4}-\d{2}-\d{2}\b',
+            r'\b\d{1,2}/\d{1,2}/\d{4}\b',
+        ]
+
+        text = element.get_text()
+        for pattern in date_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                return self._normalize_date(match.group())
+
+        return None
+
+    def _normalize_date(self, date_str: str) -> Optional[str]:
+        """Try to normalize a date string to ISO format."""
+        if not date_str:
+            return None
+
+        from datetime import datetime
+        import re
+
+        # Already ISO format
+        if re.match(r'^\d{4}-\d{2}-\d{2}', date_str):
+            return date_str
+
+        # Common date formats to try
+        formats = [
+            '%B %d, %Y',      # January 15, 2024
+            '%b %d, %Y',      # Jan 15, 2024
+            '%B %d %Y',       # January 15 2024
+            '%b %d %Y',       # Jan 15 2024
+            '%d %B %Y',       # 15 January 2024
+            '%d %b %Y',       # 15 Jan 2024
+            '%m/%d/%Y',       # 01/15/2024
+            '%d/%m/%Y',       # 15/01/2024
+            '%Y/%m/%d',       # 2024/01/15
+        ]
+
+        # Clean up the string
+        date_str = date_str.strip()
+        date_str = re.sub(r'\s+', ' ', date_str)
+        date_str = re.sub(r'(\d+)(st|nd|rd|th)', r'\1', date_str)  # Remove ordinals
+
+        for fmt in formats:
+            try:
+                dt = datetime.strptime(date_str, fmt)
+                return dt.strftime('%Y-%m-%dT00:00:00Z')
+            except ValueError:
+                continue
+
+        # Return original if we can't parse it but it looks like a date
+        if any(month in date_str.lower() for month in ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']):
+            return date_str
 
         return None
 
