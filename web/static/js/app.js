@@ -267,7 +267,7 @@ function formatSourceName(source) {
         'meta_ai': 'Meta AI',
         'mistral': 'Mistral',
         'cohere': 'Cohere',
-        'xai': 'xAI',
+        'xai': 'xAI / Grok',
         'ai21': 'AI21 Labs',
         'stability': 'Stability AI',
         'inflection': 'Inflection AI',

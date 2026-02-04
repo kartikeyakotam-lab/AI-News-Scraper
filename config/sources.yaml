@@ -14,27 +14,9 @@ sources:
 
   - name: anthropic_news
     display_name: "Anthropic News"
-    url: "https://www.anthropic.com/news"
-    type: html
-    selectors:
-      article_list: "a[href*='/news/']"
-      title: "h3, h2, [class*='title']"
-      link: "a"
-      date: "time, [class*='date']"
-      summary: "p, [class*='description']"
-    rate_limit_seconds: 2
-
-  - name: anthropic_research
-    display_name: "Anthropic Research"
-    url: "https://www.anthropic.com/research"
-    type: html
-    selectors:
-      article_list: "a[href*='/research/']"
-      title: "h3, h2, [class*='title']"
-      link: "a"
-      date: "time, [class*='date']"
-      summary: "p, [class*='description']"
-    rate_limit_seconds: 2
+    url: "https://news.google.com/rss/search?q=anthropic+AI+Claude&hl=en-US&gl=US&ceid=US:en"
+    type: rss
+    rate_limit_seconds: 1
 
   - name: deepmind
     display_name: "Google DeepMind Blog"
@@ -91,16 +73,10 @@ sources:
     rate_limit_seconds: 2
 
   - name: xai
-    display_name: "xAI"
-    url: "https://x.ai/blog"
-    type: html
-    selectors:
-      article_list: "article, [class*='post'], [class*='blog']"
-      title: "h2, h3, [class*='title']"
-      link: "a"
-      date: "time, [class*='date']"
-      summary: "p"
-    rate_limit_seconds: 2
+    display_name: "xAI / Grok"
+    url: "https://news.google.com/rss/search?q=xAI+Grok+AI&hl=en-US&gl=US&ceid=US:en"
+    type: rss
+    rate_limit_seconds: 1
 
   - name: ai21
     display_name: "AI21 Labs Blog"

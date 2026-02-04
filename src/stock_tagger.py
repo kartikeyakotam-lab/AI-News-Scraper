@@ -1,10 +1,14 @@
 import os
 import logging
 import yaml
+import time
 from pathlib import Path
 from anthropic import Anthropic
 
 logger = logging.getLogger(__name__)
+
+# Delay between API calls to avoid rate limiting (seconds)
+API_CALL_DELAY = 2
 
 
 class StockTagger:
@@ -149,7 +153,11 @@ Only include stocks that have a clear, direct connection to the news - don't str
         """
         tagged_articles = []
 
-        for article in articles:
+        for i, article in enumerate(articles):
+            # Add delay between API calls to avoid rate limiting
+            if i > 0:
+                time.sleep(API_CALL_DELAY)
+
             result = self.tag_article(article)
 
             # Add tagging results to article

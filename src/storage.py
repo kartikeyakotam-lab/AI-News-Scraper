@@ -1,12 +1,16 @@
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .parsers.base import Article
 
 logger = logging.getLogger(__name__)
+
+# Number of days to keep articles
+MAX_ARTICLE_AGE_DAYS = 14
 
 
 class Storage:
@@ -112,12 +116,11 @@ class Storage:
             except (json.JSONDecodeError, IOError) as e:
                 logger.error(f"Error reading {file_path}: {e}")
 
-        # Sort by published_date (newest first), fallback to scraped_at
-        # Articles without dates go to the end
-        all_articles.sort(
-            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
-            reverse=True
-        )
+        # Filter to only articles within last 2 weeks with valid dates
+        all_articles = [a for a in all_articles if self._is_within_date_range(a)]
+
+        # Sort by date (newest first) using parsed dates
+        all_articles.sort(key=self._get_sort_key, reverse=True)
 
         # Save combined file
         combined_file = self._get_combined_file()
@@ -138,38 +141,88 @@ class Storage:
                 return article
         return None
 
+    def _parse_date(self, date_str: str) -> Optional[datetime]:
+        """Parse a date string into a datetime object."""
+        if not date_str:
+            return None
+
+        # Try various date formats
+        formats = [
+            '%Y-%m-%dT%H:%M:%S.%fZ',
+            '%Y-%m-%dT%H:%M:%SZ',
+            '%Y-%m-%dT%H:%M:%S',
+            '%Y-%m-%d %H:%M:%S',
+            '%Y-%m-%d',
+            '%B %d, %Y',
+            '%b %d, %Y',
+            '%d %B %Y',
+            '%d %b %Y',
+        ]
+
+        for fmt in formats:
+            try:
+                return datetime.strptime(date_str[:26], fmt)  # Limit length for microseconds
+            except (ValueError, TypeError):
+                continue
+
+        # Try to extract ISO date from string
+        iso_match = re.search(r'(\d{4}-\d{2}-\d{2})', date_str)
+        if iso_match:
+            try:
+                return datetime.strptime(iso_match.group(1), '%Y-%m-%d')
+            except ValueError:
+                pass
+
+        return None
+
+    def _is_within_date_range(self, article: dict, days: int = MAX_ARTICLE_AGE_DAYS) -> bool:
+        """Check if article is within the specified date range."""
+        date_str = article.get('published_date') or article.get('scraped_at')
+        if not date_str:
+            return False
+
+        parsed_date = self._parse_date(date_str)
+        if not parsed_date:
+            return False
+
+        cutoff = datetime.utcnow() - timedelta(days=days)
+        return parsed_date >= cutoff
+
     def _has_valid_date(self, article: dict) -> bool:
-        """Check if article has a valid date."""
+        """Check if article has a valid date within the last 2 weeks."""
         date = article.get('published_date') or article.get('scraped_at')
         if not date:
             return False
         # Check it's not a placeholder or invalid
-        if date == '1970-01-01' or date.startswith('1970'):
+        if date == '1970-01-01' or str(date).startswith('1970'):
             return False
-        return True
+        # Check it's within the date range
+        return self._is_within_date_range(article)
+
+    def _get_sort_key(self, article: dict) -> str:
+        """Get a sortable date key for an article."""
+        date_str = article.get('published_date') or article.get('scraped_at') or ''
+        parsed = self._parse_date(date_str)
+        if parsed:
+            return parsed.isoformat()
+        return '1970-01-01'
 
     def get_articles_by_source(self, source_name: str, limit: int = 50) -> list[dict]:
-        """Get articles from a specific source, sorted by date (newest first). Only includes articles with dates."""
+        """Get articles from a specific source, sorted by date (newest first). Only includes articles from last 2 weeks."""
         articles = self.load_articles(source_name)
-        # Filter out articles without valid dates
+        # Filter to only articles with valid dates within last 2 weeks
         articles = [a for a in articles if self._has_valid_date(a)]
-        # Sort by date (newest first)
-        articles.sort(
-            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
-            reverse=True
-        )
+        # Sort by date (newest first) using parsed dates
+        articles.sort(key=self._get_sort_key, reverse=True)
         return articles[:limit]
 
     def get_recent_articles(self, limit: int = 50) -> list[dict]:
-        """Get most recent articles across all sources, sorted by date (newest first). Only includes articles with dates."""
+        """Get most recent articles across all sources, sorted by date (newest first). Only includes articles from last 2 weeks."""
         articles = self.load_all_articles()
-        # Filter out articles without valid dates
+        # Filter to only articles with valid dates within last 2 weeks
         articles = [a for a in articles if self._has_valid_date(a)]
-        # Sort by date (newest first)
-        articles.sort(
-            key=lambda x: x.get('published_date') or x.get('scraped_at') or '1970-01-01',
-            reverse=True
-        )
+        # Sort by date (newest first) using parsed dates
+        articles.sort(key=self._get_sort_key, reverse=True)
         return articles[:limit]
 
     def cleanup_old_articles(self, days: int = 14) -> int:

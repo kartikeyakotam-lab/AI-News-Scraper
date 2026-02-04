@@ -42,7 +42,11 @@ def run_scrape_job(send_newsletter: bool = True):
                 # Tag new articles with stock impacts
                 if new_articles and stock_tagger.is_available():
                     logger.info(f"Tagging {len(new_articles)} new articles from {source_name}")
-                    for article in new_articles:
+                    for i, article in enumerate(new_articles):
+                        # Add delay between API calls to avoid rate limiting
+                        if i > 0:
+                            time.sleep(2)
+
                         tag_result = stock_tagger.tag_article(article.to_dict())
                         # Store tagged data
                         tagged_dict = article.to_dict()
@@ -92,7 +96,7 @@ class NewsScheduler:
     """Scheduler for automatic news scraping."""
 
     def __init__(self, interval_hours: int = None):
-        self.interval_hours = interval_hours or int(os.getenv('SCRAPE_INTERVAL_HOURS', 4))
+        self.interval_hours = interval_hours or int(os.getenv('SCRAPE_INTERVAL_HOURS', 1))
         self.running = False
 
     def setup(self):
