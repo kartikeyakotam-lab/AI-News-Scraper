@@ -236,6 +236,69 @@ def cmd_retag(args):
     print(f"\nDone! Tagged {tagged_count} articles.")
 
 
+def cmd_sentiment(args):
+    """Run retail investor sentiment scan across top 25 names."""
+    from src.sentiment.agent import SentimentAgent
+
+    agent = SentimentAgent()
+    tickers = args.ticker if args.ticker else None
+    demo = getattr(args, 'demo', False)
+    results = agent.run(tickers=tickers, verbose=True, demo=demo)
+
+    if args.json:
+        import json
+        print(json.dumps(results, indent=2))
+
+    print(f"Sentiment scan complete — {len(results)} tickers analyzed.")
+    print("Run 'python main.py options-plays' to generate this week's options plays.")
+
+
+def cmd_options_plays(args):
+    """Generate weekly options plays from latest sentiment data."""
+    from src.sentiment.agent import SentimentAgent
+
+    agent = SentimentAgent()
+    top_n = args.top or 10
+    demo = getattr(args, 'demo', False)
+
+    if args.refresh:
+        print("Refreshing sentiment data first...")
+        results = agent.run(verbose=True, demo=demo)
+    else:
+        results = None
+
+    plays = agent.get_options_plays(top_n=top_n, results=results, verbose=True)
+
+    if args.json:
+        import json
+        print(json.dumps(plays, indent=2))
+
+
+def cmd_sentiment_detail(args):
+    """Deep-dive sentiment for a single ticker."""
+    from src.sentiment.agent import SentimentAgent
+
+    agent = SentimentAgent()
+    demo = getattr(args, 'demo', False)
+    agent.get_ticker_detail(args.ticker, demo=demo)
+
+
+def cmd_trending(args):
+    """Show currently trending tickers on StockTwits."""
+    from src.sentiment.agent import SentimentAgent
+
+    agent = SentimentAgent()
+    agent.get_trending()
+
+
+def cmd_sentiment_sources(args):
+    """Show which data sources are configured."""
+    from src.sentiment.agent import SentimentAgent
+
+    agent = SentimentAgent()
+    agent.show_source_status()
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='AI News Scraper - Collect and search AI news with Claude',
@@ -276,6 +339,59 @@ def main():
     retag_parser = subparsers.add_parser('retag', help='Re-tag articles with stock impacts')
     retag_parser.add_argument('--limit', type=int, default=50, help='Number of articles to tag')
 
+    # Sentiment command
+    sentiment_parser = subparsers.add_parser(
+        'sentiment', help='Run retail investor sentiment scan (top 25 names)'
+    )
+    sentiment_parser.add_argument(
+        '--ticker', nargs='+', metavar='TICKER',
+        help='Limit scan to specific ticker(s), e.g. --ticker TSLA NVDA GME'
+    )
+    sentiment_parser.add_argument(
+        '--demo', action='store_true',
+        help='Use realistic mock data (no API keys required)'
+    )
+    sentiment_parser.add_argument(
+        '--json', action='store_true', help='Also dump raw JSON output'
+    )
+
+    # Options plays command
+    plays_parser = subparsers.add_parser(
+        'options-plays', help='Generate weekly options plays from sentiment data'
+    )
+    plays_parser.add_argument(
+        '--top', type=int, default=10, metavar='N',
+        help='Number of top movers to consider (default: 10)'
+    )
+    plays_parser.add_argument(
+        '--refresh', action='store_true',
+        help='Re-run sentiment scan before generating plays'
+    )
+    plays_parser.add_argument(
+        '--demo', action='store_true',
+        help='Use realistic mock data (no API keys required)'
+    )
+    plays_parser.add_argument(
+        '--json', action='store_true', help='Also dump raw JSON output'
+    )
+
+    # Sentiment detail command
+    detail_parser = subparsers.add_parser(
+        'sentiment-detail', help='Deep-dive sentiment for a single ticker'
+    )
+    detail_parser.add_argument('ticker', help='Ticker symbol, e.g. TSLA')
+    detail_parser.add_argument('--demo', action='store_true', help='Use mock data')
+
+    # Trending command
+    trending_parser = subparsers.add_parser(
+        'trending', help='Show currently trending tickers on StockTwits'
+    )
+
+    # Source status command
+    subparsers.add_parser(
+        'sentiment-sources', help='Show which sentiment data sources are configured'
+    )
+
     args = parser.parse_args()
 
     if args.command == 'run':
@@ -294,6 +410,16 @@ def main():
         cmd_test_email(args)
     elif args.command == 'retag':
         cmd_retag(args)
+    elif args.command == 'sentiment':
+        cmd_sentiment(args)
+    elif args.command == 'options-plays':
+        cmd_options_plays(args)
+    elif args.command == 'sentiment-detail':
+        cmd_sentiment_detail(args)
+    elif args.command == 'trending':
+        cmd_trending(args)
+    elif args.command == 'sentiment-sources':
+        cmd_sentiment_sources(args)
     else:
         parser.print_help()
 

@@ -17,6 +17,8 @@ from src.storage import Storage
 from src.ai_search import AISearch
 from src.scraper import Scraper
 from src.deduplicator import Deduplicator
+from src.sentiment.agent import SentimentAgent
+from src.sentiment.aggregator import SentimentAggregator
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -37,6 +39,7 @@ templates = Jinja2Templates(directory=str(templates_path))
 # Initialize services
 storage = Storage()
 ai_search = AISearch(storage)
+sentiment_aggregator = SentimentAggregator()
 
 
 # Request/Response models
@@ -159,6 +162,132 @@ async def health_check():
         "status": "healthy",
         "ai_search_available": ai_search.is_available()
     }
+
+
+# ─── Sentiment API ────────────────────────────────────────────────────────────
+
+@app.get("/api/sentiment/latest")
+async def get_latest_sentiment(
+    sort: str = Query("score", description="Sort by: score | ticker | volume"),
+    limit: int = Query(25, ge=1, le=25),
+):
+    """Return the most recent sentiment results for all tracked tickers."""
+    results = sentiment_aggregator.load_latest()
+    if not results:
+        return {"results": [], "message": "No sentiment data yet. Run sentiment scan first."}
+
+    if sort == "ticker":
+        results = sorted(results, key=lambda r: r["ticker"])
+    elif sort == "volume":
+        results = sorted(
+            results,
+            key=lambda r: r["raw_signals"].get("stocktwits", {}).get("total_messages", 0),
+            reverse=True,
+        )
+    else:  # score — most extreme first
+        results = sorted(results, key=lambda r: abs(r["analysis"].get("score", 0)), reverse=True)
+
+    results = results[:limit]
+
+    return {
+        "count": len(results),
+        "sort": sort,
+        "results": [
+            {
+                "ticker": r["ticker"],
+                "name": r["name"],
+                "sector": r["sector"],
+                "score": r["analysis"].get("score", 0),
+                "sentiment_label": r["analysis"].get("sentiment_label", ""),
+                "confidence": r["analysis"].get("confidence", ""),
+                "volume_signal": r["analysis"].get("volume_signal", ""),
+                "narrative": r["analysis"].get("narrative", ""),
+                "options_implication": r["analysis"].get("options_implication", ""),
+                "key_themes": r["analysis"].get("key_themes", []),
+                "stocktwits_messages": r["raw_signals"].get("stocktwits", {}).get("total_messages", 0),
+                "stocktwits_bullish": r["raw_signals"].get("stocktwits", {}).get("bullish", 0),
+                "stocktwits_bearish": r["raw_signals"].get("stocktwits", {}).get("bearish", 0),
+                "reddit_posts": r["raw_signals"].get("reddit", {}).get("total_posts", 0),
+                "reddit_score": r["raw_signals"].get("reddit", {}).get("total_score", 0),
+                "run_at": r.get("run_at", ""),
+            }
+            for r in results
+        ],
+    }
+
+
+@app.get("/api/sentiment/{ticker}")
+async def get_ticker_sentiment(ticker: str):
+    """Return full sentiment detail for a single ticker."""
+    results = sentiment_aggregator.load_latest()
+    ticker = ticker.upper()
+    match = next((r for r in results if r["ticker"] == ticker), None)
+    if not match:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No sentiment data for {ticker}. Run sentiment scan first.",
+        )
+    return match
+
+
+@app.post("/api/sentiment/scan")
+async def trigger_sentiment_scan(
+    background_tasks: BackgroundTasks,
+    tickers: Optional[str] = Query(None, description="Comma-separated tickers, e.g. TSLA,NVDA"),
+):
+    """Trigger a background sentiment scan."""
+    ticker_list = [t.strip().upper() for t in tickers.split(",")] if tickers else None
+
+    def do_scan():
+        agent = SentimentAgent()
+        agent.run(tickers=ticker_list, verbose=False)
+
+    background_tasks.add_task(do_scan)
+    return {
+        "status": "started",
+        "message": f"Sentiment scan started for {ticker_list or 'all 25 tickers'}",
+    }
+
+
+@app.get("/api/sentiment/plays/latest")
+async def get_latest_plays():
+    """Return the most recently generated options plays."""
+    from pathlib import Path
+    import json
+
+    plays_file = Path("data/sentiment/latest_plays.json")
+    if not plays_file.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="No options plays generated yet. Run options-plays command first.",
+        )
+    with open(plays_file) as f:
+        return json.load(f)
+
+
+@app.post("/api/sentiment/plays/generate")
+async def generate_plays(
+    background_tasks: BackgroundTasks,
+    top_n: int = Query(10, ge=1, le=25),
+):
+    """Trigger background generation of options plays from latest sentiment data."""
+
+    def do_generate():
+        agent = SentimentAgent()
+        agent.get_options_plays(top_n=top_n, verbose=False)
+
+    background_tasks.add_task(do_generate)
+    return {
+        "status": "started",
+        "message": f"Generating options plays from top {top_n} movers...",
+    }
+
+
+@app.get("/api/sentiment/trending")
+async def get_trending():
+    """Get tickers currently trending on StockTwits."""
+    trending = sentiment_aggregator.get_trending_on_stocktwits()
+    return {"trending": trending, "count": len(trending)}
 
 
 def create_app():
