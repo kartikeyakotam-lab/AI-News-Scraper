@@ -12,9 +12,10 @@ env/
 .env
 .env.local
 
-# Data (scraped articles - regenerated)
+# Data (scraped articles and sentiment results - regenerated on each run)
 data/articles/*.json
 data/.cache.sqlite
+data/sentiment/
 
 # Logs
 logs/*.log
